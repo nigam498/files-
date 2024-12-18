@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download and Auto-Upload</title>
+</head>
+<body>
+    <a id="download-link" href="https://example.com/file-to-download.txt">Download File</a>
+    <p id="status"></p>
+
+    <script>
+        // URL of your server endpoint where the file will be uploaded
+        const uploadEndpoint = "/upload";
+
+        document.getElementById("download-link").addEventListener("click", async (event) => {
+            event.preventDefault(); // Prevent default download behavior
+
+            const downloadUrl = event.target.href;
+            const statusElement = document.getElementById("status");
+
+            try {
+                statusElement.textContent = "Downloading file...";
+
+                // Step 1: Download the file
+                const response = await fetch(downloadUrl);
+                if (!response.ok) throw new Error(`Failed to download file. Status: ${response.status}`);
+                
+                const fileBlob = await response.blob();
+                const fileName = downloadUrl.split("/").pop() || "downloaded_file";
+
+                statusElement.textContent = "Uploading file...";
+
+                // Step 2: Upload the file to the server
+                const formData = new FormData();
+                formData.append("file", fileBlob, fileName);
+
+                const uploadResponse = await fetch(uploadEndpoint, {
+                    method: "POST",
+                    body: formData,
+                });
+
+                if (!uploadResponse.ok) throw new Error(`Failed to upload file. Status: ${uploadResponse.status}`);
+                
+                statusElement.textContent = "File uploaded successfully!";
+            } catch (error) {
+                console.error("Error during file processing:", error);
+                statusElement.textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>
