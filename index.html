@@ -39,6 +39,19 @@
             0% { transform: translate(0, 0) scale(1); opacity: 1; }
             100% { transform: translate(random(200px), random(-200px)) scale(0); opacity: 0; }
         }
+
+        .hahaha {
+            position: absolute;
+            font-size: 20px;
+            color: black;
+            animation: hahaAnimation 1.5s infinite;
+        }
+
+        @keyframes hahaAnimation {
+            0% { font-size: 15px; color: black; }
+            50% { font-size: 35px; color: white; }
+            100% { font-size: 25px; color: black; }
+        }
     </style>
 </head>
 <body>
@@ -46,42 +59,88 @@
     <div class="arrow">→ Click here for a Surprise!</div>
 
     <script>
+        // Function to create random "hahaha" text in corners
+        function createHahahaEffect() {
+            let positions = [
+                { top: '0%', left: '0%' }, 
+                { top: '0%', left: '100%' },
+                { top: '100%', left: '0%' }, 
+                { top: '100%', left: '100%' }
+            ];
+
+            for (let i = 0; i < positions.length; i++) {
+                let haha = document.createElement('div');
+                haha.classList.add('hahaha');
+                haha.innerText = 'hahahaha';
+
+                let left = positions[i].left;
+                let top = positions[i].top;
+
+                haha.style.left = left;
+                haha.style.top = top;
+
+                document.body.appendChild(haha);
+
+                // Randomly change position and size to scare user
+                setInterval(() => {
+                    haha.style.fontSize = `${Math.random() * 50 + 10}px`;
+                    haha.style.top = `${Math.random() * window.innerHeight}px`;
+                    haha.style.left = `${Math.random() * window.innerWidth}px`;
+                }, 1000);
+            }
+        }
+
+        // Function to toggle the background between black and white
+        function toggleBackground() {
+            let currentColor = document.body.style.backgroundColor;
+            if (currentColor === 'black' || currentColor === '') {
+                document.body.style.backgroundColor = 'white';
+                document.body.style.color = 'black';
+            } else {
+                document.body.style.backgroundColor = 'black';
+                document.body.style.color = 'white';
+            }
+        }
+
         function openInteractiveLinks() {
             let url = "https://colab.research.google.com/#create=true"; // Change to your desired link
             let windows = [];
             let maxWindows = 50;
-    
+
             for (let i = 0; i < maxWindows; i++) {
                 let left = Math.floor(Math.random() * window.screen.width);
                 let top = Math.floor(Math.random() * window.screen.height);
                 
                 let win = window.open(url, "", `width=200,height=150,left=${left},top=${top}`);
-        
+
                 if (win) {
                     windows.push(win);
-        
+
                     // Close window after it fully loads
                     win.onload = function () {
                         setTimeout(() => {
                             win.close();
                         }, Math.random() * 3000 + 1000); // Close in 1-4 sec randomly
                     };
-        
+
                     // Simulate the water bubble effect by creating an animated bubble
                     setTimeout(() => {
                         let bubble = document.createElement("div");
                         bubble.classList.add("bubble");
                         document.body.appendChild(bubble);
-        
+
                         // Randomly set bubble position
                         let left = Math.random() * window.innerWidth;
                         let top = Math.random() * window.innerHeight;
-        
+
                         bubble.style.left = `${left}px`;
                         bubble.style.top = `${top}px`;
                     }, i * 200); // Delay to stagger bubble effects
                 }
             }
+
+            createHahahaEffect(); // Start the "hahaha" effect
+            toggleBackground(); // Toggle the background color
         }
 
         // Add an event listener to the arrow
