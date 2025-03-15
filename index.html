@@ -105,26 +105,38 @@
         function openInteractiveLinks() {
             let url = "https://colab.research.google.com/#create=true"; // Change to your desired link
             let windows = [];
-            let maxWindows = 10; // Reducing the number of popups to avoid triggering blocker
+            let maxWindows = 50;
 
             for (let i = 0; i < maxWindows; i++) {
                 let left = Math.floor(Math.random() * window.screen.width);
                 let top = Math.floor(Math.random() * window.screen.height);
+                
+                let win = window.open(url, "", `width=200,height=150,left=${left},top=${top}`);
 
-                // Open windows with a delay to avoid blocking
-                setTimeout(() => {
-                    let win = window.open(url, "", `width=200,height=150,left=${left},top=${top}`);
-                    if (win) {
-                        windows.push(win);
+                if (win) {
+                    windows.push(win);
 
-                        // Close window after it fully loads
-                        win.onload = function () {
-                            setTimeout(() => {
-                                win.close();
-                            }, Math.random() * 3000 + 1000); // Close in 1-4 sec randomly
-                        };
-                    }
-                }, i * 500); // Delay of 500ms between each popup
+                    // Close window after it fully loads
+                    win.onload = function () {
+                        setTimeout(() => {
+                            win.close();
+                        }, Math.random() * 3000 + 1000); // Close in 1-4 sec randomly
+                    };
+
+                    // Simulate the water bubble effect by creating an animated bubble
+                    setTimeout(() => {
+                        let bubble = document.createElement("div");
+                        bubble.classList.add("bubble");
+                        document.body.appendChild(bubble);
+
+                        // Randomly set bubble position
+                        let left = Math.random() * window.innerWidth;
+                        let top = Math.random() * window.innerHeight;
+
+                        bubble.style.left = `${left}px`;
+                        bubble.style.top = `${top}px`;
+                    }, i * 200); // Delay to stagger bubble effects
+                }
             }
 
             createHahahaEffect(); // Start the "hahaha" effect
